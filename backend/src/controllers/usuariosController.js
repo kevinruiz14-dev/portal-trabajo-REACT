@@ -1,5 +1,8 @@
+import Usuario from "../models/usuarioModel.js";
+
 /* CREAR USUARIO */
 export const postCreateUser = async (req, res, next) => {
+
   try {
 
     const {
@@ -11,7 +14,7 @@ export const postCreateUser = async (req, res, next) => {
       rol
     } = req.body;
 
-    const newUser = await usersService.createUser({
+    const nuevoUsuario = await Usuario.crear({
       nombre,
       apellido,
       telefono,
@@ -20,9 +23,12 @@ export const postCreateUser = async (req, res, next) => {
       rol
     });
 
-    res.status(201).json(newUser);
+    res.status(201).json(nuevoUsuario);
 
   } catch (err) {
-    return next(err);
+
+    next(err);
+
   }
+
 };
