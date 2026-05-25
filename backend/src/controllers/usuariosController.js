@@ -1,8 +1,4 @@
 import Usuario from "../models/usuariosModel.js";
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
 /* CREAR USUARIO */
 export const postCreateUser = async (req, res, next) => {
   try {
