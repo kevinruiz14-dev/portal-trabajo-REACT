@@ -1,5 +1,10 @@
+<<<<<<< Updated upstream
 import pg from 'pg';
 import dotenv from 'dotenv';
+=======
+import pg from "pg";
+import dotenv from "dotenv";
+>>>>>>> Stashed changes
 
 dotenv.config();
 
@@ -13,4 +18,9 @@ const pool = new Pool({
     port: process.env.DB_PORT,
 });
 
+<<<<<<< Updated upstream
+=======
+module.exports = pool;
+
+>>>>>>> Stashed changes
 export default pool;
