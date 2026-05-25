@@ -22,7 +22,6 @@ app.use((err, req, res, next) => {
     res.status(500).json({ error: 'Algo salió mal en el servidor.' });
 });
 
-// Usar el puerto del .env o el 3000 por defecto
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
