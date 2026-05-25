@@ -1,11 +1,9 @@
 import Usuario from "../models/usuariosModel.js";
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
 /* CREAR USUARIO */
 export const postCreateUser = async (req, res, next) => {
   try {
+    console.log(req.body);
+    
     const {
       nombre,
       apellido,
@@ -72,6 +70,67 @@ export const deleteUser = async (req, res, next) => {
     }
 
     return res.status(200).json({ mensaje: "Usuario eliminado", eliminado });
+
+  } catch (error) {
+    next(error);  }
+};
+
+/* LOGIN DE USUARIOS */
+export const loginUser = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await Usuario.buscarPorEmail(email);
+
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    if (user.password_hash !== password) {
+  return res.status(401).json({ message: "Contraseña incorrecta" });
+}
+
+    return res.status(200).json({
+      message: "Login exitoso",
+      user
+    });
+
+  } catch (error) {
+    next(error);
+  }
+};
+
+/*ACTUALIZAR USUARIO */
+export const updateUser = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const {
+      nombre,
+      apellido,
+      telefono,
+      email,
+      password,
+      rol
+    } = req.body;
+
+    const actualizado = await Usuario.actualizar(id, {
+      nombre,
+      apellido,
+      telefono,
+      email,
+      password,
+      rol
+    });
+
+    if (!actualizado) {
+      return res.status(404).json({ mensaje: "Usuario no encontrado" });
+    }
+
+    return res.status(200).json({
+      mensaje: "Usuario actualizado",
+      usuario: actualizado
+    });
 
   } catch (error) {
     next(error);
