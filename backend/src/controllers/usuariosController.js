@@ -1,4 +1,4 @@
-import Usuario from "../models/usuarioModel.js";
+import Usuario from "../models/usuariosModel.js";
 
 /* CREAR USUARIO */
 export const postCreateUser = async (req, res, next) => {

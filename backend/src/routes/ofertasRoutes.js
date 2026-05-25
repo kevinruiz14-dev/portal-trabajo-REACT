@@ -1,10 +1,10 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const ofertasController = require('../controllers/ofertasController');
+import * as ofertasController from '../controllers/ofertasController.js';
 
 router.post('/', ofertasController.crearOferta);
 router.get('/', ofertasController.listarOfertas);
 router.put('/:id', ofertasController.editarOferta);
 router.delete('/:id', ofertasController.eliminarOferta);
 
-module.exports = router;
+export default router;

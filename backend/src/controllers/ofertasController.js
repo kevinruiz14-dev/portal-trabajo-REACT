@@ -1,6 +1,6 @@
-const Oferta = require("../models/ofertaModel");
+import Oferta from '../models/ofertaModel.js';
 
-exports.crearOferta = async (req, res) => {
+export const crearOferta = async (req, res) => {
   try {
     const nuevaOferta = await Oferta.crear(req.body);
     res.status(201).json({ mensaje: "Oferta creada", data: nuevaOferta });
@@ -11,7 +11,7 @@ exports.crearOferta = async (req, res) => {
   }
 };
 
-exports.editarOferta = async (req, res) => {
+export const editarOferta = async (req, res) => {
   try {
     const { id } = req.params;
     const ofertaActualizada = await Oferta.editar(id, req.body);
@@ -25,7 +25,7 @@ exports.editarOferta = async (req, res) => {
   }
 };
 
-exports.eliminarOferta = async (req, res) => {
+export const eliminarOferta = async (req, res) => {
   try {
     const { id } = req.params;
     const ofertaEliminada = await Oferta.eliminar(id);
@@ -39,7 +39,7 @@ exports.eliminarOferta = async (req, res) => {
   }
 };
 
-exports.listarOfertas = async (req, res) => {
+export const listarOfertas = async (req, res) => {
   try {
     const ofertas = await Oferta.listar();
     res.json({ data: ofertas });

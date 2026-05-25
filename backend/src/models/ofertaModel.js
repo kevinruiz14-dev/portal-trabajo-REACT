@@ -1,4 +1,4 @@
-const pool = require("../config/db");
+import pool from "../config/db.js";
 
 const Oferta = {
   crear: async (data) => {
@@ -36,4 +36,4 @@ const Oferta = {
   },
 };
 
-module.exports = Oferta;
+export default Oferta;

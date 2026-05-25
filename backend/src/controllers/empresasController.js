@@ -1,6 +1,6 @@
-const Empresa = require("../models/empresaModel");
+import Empresa from '../models/empresasModel.js';
 
-exports.crearEmpresa = async (req, res) => {
+export const crearEmpresa = async (req, res) => {
   try {
     const nuevaEmpresa = await Empresa.crear(req.body);
     res
@@ -13,7 +13,7 @@ exports.crearEmpresa = async (req, res) => {
   }
 };
 
-exports.editarEmpresa = async (req, res) => {
+export const editarEmpresa = async (req, res) => {
   try {
     const { id } = req.params;
     const empresaActualizada = await Empresa.editar(id, req.body);
@@ -27,7 +27,7 @@ exports.editarEmpresa = async (req, res) => {
   }
 };
 
-exports.inactivarEmpresa = async (req, res) => {
+export const inactivarEmpresa = async (req, res) => {
   try {
     const { id } = req.params;
     const empresaInactiva = await Empresa.inactivar(id);
