@@ -6,8 +6,8 @@ const app = express();
 app.use(express.json());
 
 // Importar rutas
-const empresasRoutes = require('./routes/empresasRoutes');
-const ofertasRoutes = require('./routes/ofertasRoutes');
+const empresasRoutes = require('./src/routes/empresasRoutes');
+const ofertasRoutes = require('./src/routes/ofertasRoutes');
 
 // Usar rutas
 app.use('/api/empresas', empresasRoutes);
