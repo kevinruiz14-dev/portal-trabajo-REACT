@@ -1,19 +1,15 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './layouts/Navbar';
 import Footer from './layouts/Footer';
+import Home from './pages/Home';
 
 function App() {
   return (
     <Router>
       <Navbar />
-      <main style={{ minHeight: '80vh', padding: '2rem' }}>
+      <main style={{ minHeight: '80vh', padding: '2rem', maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
         <Routes>
-          <Route path="/" element={
-            <div className="card" style={{ maxWidth: '600px', margin: '0 auto', textAlign: 'center', marginTop: '4rem' }}>
-              <h2>Home en Construcción</h2>
-              <p style={{ marginTop: '1rem', color: 'var(--text-muted)' }}>Aquí irá el buscador principal.</p>
-            </div>
-          } />
+          <Route path="/" element={<Home />} />
         </Routes>
       </main>
       <Footer />
