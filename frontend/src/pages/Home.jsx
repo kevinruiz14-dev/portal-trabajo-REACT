@@ -1,28 +1,76 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 const Home = () => {
+  // Aquí se guardarán los empleos reales que vengan de la base de datos
+  const [empleos, setEmpleos] = useState([]);
+
+  useEffect(() => {
+    // Simulación de la llamada al backend. 
+    // Cuando el backend esté listo, aquí usarán axios.get('http://localhost:tu-puerto/api/empleos')
+    const cargarEmpleos = () => {
+      const datosBaseDeDatos = [
+        {
+          id: 1,
+          titulo: "Desarrollador Full Stack React & Node",
+          empresa: "Tech Solutions S.A.",
+          ubicacion: "San Salvador",
+          salario: "$1,500 - $2,000",
+          modalidad: "Remoto",
+          tipo: "Tiempo Completo",
+          estado: "abierto",
+          letra: "T",
+          color: "rgba(128, 0, 32, 0.1)",
+          textColor: "var(--primary)"
+        },
+        {
+          id: 2,
+          titulo: "Diseñador UX/UI Junior",
+          empresa: "Digital Agency",
+          ubicacion: "Santa Ana",
+          salario: "$600 - $800",
+          modalidad: "Híbrido",
+          tipo: "Medio Tiempo",
+          estado: "abierto",
+          letra: "D",
+          color: "#F3F4F6",
+          textColor: "#4B5563"
+        },
+        {
+          id: 3,
+          titulo: "Gerente de Proyectos (IT)",
+          empresa: "Global Corp",
+          ubicacion: "Presencial",
+          salario: "Salario a convenir",
+          modalidad: "Presencial",
+          tipo: "Tiempo Completo",
+          estado: "cerrado",
+          letra: "G",
+          color: "#FEE2E2",
+          textColor: "var(--danger)"
+        }
+      ];
+      setEmpleos(datosBaseDeDatos);
+    };
+
+    cargarEmpleos();
+  }, []);
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
       
+      {/* Buscador Principal */}
       <section style={{ backgroundColor: 'var(--primary)', borderRadius: '16px', padding: '3.5rem 2rem', color: 'white', textAlign: 'center', boxShadow: '0 20px 25px -5px rgba(128, 0, 32, 0.2)' }}>
         <h1 style={{ fontSize: '2.5rem', marginBottom: '1rem', color: 'white', fontWeight: '700' }}>
           Encuentra tu próximo empleo
         </h1>
         <p style={{ fontSize: '1.1rem', marginBottom: '2rem', opacity: '0.9' }}>
-          Te esperan miles de oportunidades en las mejores empresas
+          Miles de oportunidades en las mejores empresas te esperan
         </p>
         
         <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', maxWidth: '800px', margin: '0 auto', flexWrap: 'wrap' }}>
-          <input 
-            type="text" 
-            placeholder="Cargo, palabra clave o empresa..." 
-            style={{ flex: '2', minWidth: '250px', border: 'none', padding: '1rem 1.5rem', borderRadius: '12px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }} 
-          />
-          <input 
-            type="text" 
-            placeholder="📍 Ubicación..." 
-            style={{ flex: '1', minWidth: '150px', border: 'none', padding: '1rem 1.5rem', borderRadius: '12px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }} 
-          />
+          <input type="text" placeholder="Cargo, palabra clave o empresa..." style={{ flex: '2', minWidth: '250px', border: 'none', padding: '1rem 1.5rem', borderRadius: '12px' }} />
+          <input type="text" placeholder="📍 Ubicación..." style={{ flex: '1', minWidth: '150px', border: 'none', padding: '1rem 1.5rem', borderRadius: '12px' }} />
           <button className="btn" style={{ backgroundColor: 'var(--text-main)', color: 'white', padding: '0 2.5rem', borderRadius: '12px' }}>
             Buscar
           </button>
@@ -31,6 +79,7 @@ const Home = () => {
 
       <div style={{ display: 'flex', gap: '2rem', alignItems: 'flex-start', marginTop: '1rem' }}>
         
+        {/* Barra Lateral de Filtros */}
         <aside className="card" style={{ width: '280px', flexShrink: 0, position: 'sticky', top: '90px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
             <h3 style={{ fontSize: '1.1rem', margin: 0 }}>Filtros</h3>
@@ -39,101 +88,58 @@ const Home = () => {
 
           <div className="form-group" style={{ marginBottom: '1.5rem' }}>
             <label style={{ marginBottom: '0.5rem', display: 'block' }}>Modalidad de trabajo</label>
-            <label style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', fontWeight: '400', cursor: 'pointer', marginBottom: '0.5rem' }}>
-              <input type="checkbox" style={{ width: 'auto' }} /> Remoto
-            </label>
-            <label style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', fontWeight: '400', cursor: 'pointer', marginBottom: '0.5rem' }}>
-              <input type="checkbox" style={{ width: 'auto' }} /> Híbrido
-            </label>
-            <label style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', fontWeight: '400', cursor: 'pointer' }}>
-              <input type="checkbox" style={{ width: 'auto' }} /> Presencial
-            </label>
-          </div>
-
-          <div className="form-group" style={{ marginBottom: '1.5rem' }}>
-            <label style={{ marginBottom: '0.5rem', display: 'block' }}>Categoría</label>
-            <select style={{ backgroundColor: 'var(--bg-app)' }}>
-              <option>Todas las categorías</option>
-              <option>Tecnología y Sistemas</option>
-              <option>Diseño y Creatividad</option>
-              <option>Ventas y Marketing</option>
-              <option>Administración</option>
-            </select>
-          </div>
-
-          <div className="form-group">
-            <label style={{ marginBottom: '0.5rem', display: 'block' }}>Rango Salarial</label>
-            <select style={{ backgroundColor: 'var(--bg-app)' }}>
-              <option>Cualquier salario</option>
-              <option>Más de $500</option>
-              <option>Más de $1,000</option>
-              <option>Más de $2,000</option>
-            </select>
+            <label style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', fontWeight: '400', cursor: 'pointer', marginBottom: '0.5rem' }}><input type="checkbox" style={{ width: 'auto' }} /> Remoto</label>
+            <label style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', fontWeight: '400', cursor: 'pointer', marginBottom: '0.5rem' }}><input type="checkbox" style={{ width: 'auto' }} /> Híbrido</label>
+            <label style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', fontWeight: '400', cursor: 'pointer' }}><input type="checkbox" style={{ width: 'auto' }} /> Presencial</label>
           </div>
         </aside>
 
+        {/* Lista Dinámica de Empleos */}
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
           
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-            <h2 style={{ fontSize: '1.5rem', color: 'var(--text-main)' }}>Resultados (142)</h2>
-            <select style={{ width: 'auto', padding: '0.5rem 1rem', borderRadius: '8px', border: '1px solid var(--border)' }}>
-              <option>Más recientes</option>
-              <option>Mayor salario</option>
-            </select>
+            <h2 style={{ fontSize: '1.5rem', color: 'var(--text-main)' }}>Resultados ({empleos.length})</h2>
           </div>
 
-          <div className="card" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', padding: '1.5rem' }}>
-            <div style={{ width: '64px', height: '64px', backgroundColor: 'rgba(128, 0, 32, 0.1)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.8rem', fontWeight: '700', color: 'var(--primary)', flexShrink: 0 }}>
-              T
-            </div>
-            <div style={{ flex: 1 }}>
-              <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.4rem' }}>
-                <span className="badge badge-remote">Remoto</span>
-                <span className="badge badge-active">Tiempo Completo</span>
+          {/* Aquí React recorre la base de datos y dibuja una tarjeta por cada empleo */}
+          {empleos.map((empleo) => (
+            <div key={empleo.id} className="card" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', padding: '1.5rem', opacity: empleo.estado === 'cerrado' ? '0.7' : '1' }}>
+              
+              <div style={{ width: '64px', height: '64px', backgroundColor: empleo.color, borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.8rem', fontWeight: '700', color: empleo.textColor, flexShrink: 0 }}>
+                {empleo.letra}
               </div>
-              <h3 style={{ fontSize: '1.25rem', marginBottom: '0.2rem', color: 'var(--text-main)' }}>Desarrollador Full Stack React & Node</h3>
-              <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', margin: 0 }}>Tech Solutions S.A. • San Salvador</p>
-            </div>
-            <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', gap: '0.75rem', alignItems: 'flex-end', flexShrink: 0 }}>
-              <span style={{ fontWeight: '700', color: 'var(--success)', fontSize: '1.1rem' }}>$1,500 - $2,000</span>
-              <Link to="/login" className="btn btn-primary" style={{ padding: '0.6rem 1.2rem', fontSize: '0.9rem' }}>Ver Detalles</Link>
-            </div>
-          </div>
+              
+              <div style={{ flex: 1 }}>
+                <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.4rem' }}>
+                  {empleo.estado === 'cerrado' ? (
+                    <span className="badge badge-closed">Cerrada</span>
+                  ) : (
+                    <>
+                      <span className={empleo.modalidad === 'Remoto' ? 'badge badge-remote' : 'badge'} style={empleo.modalidad !== 'Remoto' ? {backgroundColor: '#E5E7EB', color: '#374151'} : {}}>
+                        {empleo.modalidad}
+                      </span>
+                      <span className="badge badge-active">{empleo.tipo}</span>
+                    </>
+                  )}
+                </div>
+                <h3 style={{ fontSize: '1.25rem', marginBottom: '0.2rem', color: 'var(--text-main)' }}>{empleo.titulo}</h3>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', margin: 0 }}>{empleo.empresa} • {empleo.ubicacion}</p>
+              </div>
 
-          <div className="card" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', padding: '1.5rem' }}>
-            <div style={{ width: '64px', height: '64px', backgroundColor: '#F3F4F6', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.8rem', fontWeight: '700', color: '#4B5563', flexShrink: 0 }}>
-              D
-            </div>
-            <div style={{ flex: 1 }}>
-              <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.4rem' }}>
-                <span className="badge" style={{ backgroundColor: '#E5E7EB', color: '#374151' }}>Híbrido</span>
-                <span className="badge badge-active">Medio Tiempo</span>
+              <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', gap: '0.75rem', alignItems: 'flex-end', flexShrink: 0 }}>
+                <span style={{ fontWeight: '700', color: empleo.estado === 'cerrado' ? 'var(--text-muted)' : 'var(--success)', fontSize: '1.1rem' }}>
+                  {empleo.salario}
+                </span>
+                
+                {empleo.estado === 'cerrado' ? (
+                  <button className="btn btn-outline" disabled style={{ padding: '0.6rem 1.2rem', fontSize: '0.9rem', cursor: 'not-allowed' }}>No disponible</button>
+                ) : (
+                  <Link to="/login" className="btn btn-primary" style={{ padding: '0.6rem 1.2rem', fontSize: '0.9rem' }}>Ver Detalles</Link>
+                )}
               </div>
-              <h3 style={{ fontSize: '1.25rem', marginBottom: '0.2rem', color: 'var(--text-main)' }}>Diseñador UX/UI Junior</h3>
-              <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', margin: 0 }}>Digital Agency • Santa Ana</p>
-            </div>
-            <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', gap: '0.75rem', alignItems: 'flex-end', flexShrink: 0 }}>
-              <span style={{ fontWeight: '700', color: 'var(--success)', fontSize: '1.1rem' }}>$600 - $800</span>
-              <Link to="/login" className="btn btn-primary" style={{ padding: '0.6rem 1.2rem', fontSize: '0.9rem' }}>Ver Detalles</Link>
-            </div>
-          </div>
 
-          <div className="card" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', padding: '1.5rem', opacity: '0.7' }}>
-            <div style={{ width: '64px', height: '64px', backgroundColor: '#FEE2E2', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.8rem', fontWeight: '700', color: 'var(--danger)', flexShrink: 0 }}>
-              G
             </div>
-            <div style={{ flex: 1 }}>
-              <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.4rem' }}>
-                <span className="badge badge-closed">Cerrada</span>
-              </div>
-              <h3 style={{ fontSize: '1.25rem', marginBottom: '0.2rem', color: 'var(--text-main)' }}>Gerente de Proyectos (IT)</h3>
-              <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', margin: 0 }}>Global Corp • Presencial</p>
-            </div>
-            <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', gap: '0.75rem', alignItems: 'flex-end', flexShrink: 0 }}>
-              <span style={{ fontWeight: '700', color: 'var(--text-muted)', fontSize: '1.1rem' }}>Salario a convenir</span>
-              <button className="btn btn-outline" disabled style={{ padding: '0.6rem 1.2rem', fontSize: '0.9rem', cursor: 'not-allowed' }}>No disponible</button>
-            </div>
-          </div>
+          ))}
 
         </div>
       </div>
