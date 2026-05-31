@@ -1,0 +1,44 @@
+:root {
+  --color-primary: #800020;
+  --color-primary-hover: #5E0017;
+  --color-bg: #F9FAFB;
+  --color-card: #FFFFFF;
+  --color-text-main: #111827;
+  --color-text-secondary: #6B7280;
+  --color-border: #E5E7EB;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text-main);
+}
+
+/* Tarjetas */
+.card {
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+}
+
+/* Botón personalizado */
+.btn-primary-custom {
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+}
+
+.btn-primary-custom:hover {
+  background-color: var(--color-primary-hover);
+}
+
+/* Barra de búsqueda */
+.search-input {
+  border: 2px solid #1E3A8A; /* azul oscuro */
+  border-radius: 6px;
+}
+
+.search-input:focus {
+  border-color: #1E3A8A;
+  box-shadow: 0 0 5px rgba(30, 58, 138, 0.5);
+  outline: none;
+}
