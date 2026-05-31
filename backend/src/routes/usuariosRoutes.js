@@ -1,5 +1,13 @@
 import express from 'express';
 import * as usuariosController from '../controllers/usuariosController.js';
+import {
+  postCreateUser,
+  getAllUsers,
+  getUserById,
+  deleteUser,
+  loginUser,
+  updateUser
+} from "../controllers/usuariosController.js";
 
 const router = express.Router();
 
@@ -13,3 +21,11 @@ router.get('/:id', usuariosController.getUserById);
 
 export default router;
 
+/*ELIMINAR USUARIO POR ID */
+router.delete('/:id', usuariosController.deleteUser);
+
+/*RUTA LOGIN USUARIO */
+router.post('/login', usuariosController.loginUser);
+
+/*RUTA ACTUALIZAR USUARIO */
+router.put("/:id", usuariosController.updateUser);

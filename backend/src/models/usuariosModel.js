@@ -20,7 +20,7 @@ const Usuario = {
 
   obtenerTodos: async () => {
     const result = await pool.query(`
-      SELECT id, nombre, apellido, telefono, email, rol
+      SELECT usuario_id, nombre, apellido, telefono, email, rol
       FROM usuarios
     `);
 
@@ -29,9 +29,9 @@ const Usuario = {
 
   obtenerPorId: async (id) => {
     const result = await pool.query(`
-      SELECT id, nombre, apellido, telefono, email, rol
+      SELECT usuario_id, nombre, apellido, telefono, email, rol
       FROM usuarios
-      WHERE id = $1
+      WHERE usuario_id = $1
     `, [id]);
 
     return result.rows[0];
@@ -40,12 +40,46 @@ const Usuario = {
   eliminar: async (id) => {
     const result = await pool.query(`
       DELETE FROM usuarios
-      WHERE id = $1
+      WHERE usuario_id = $1
       RETURNING *
     `, [id]);
 
     return result.rows[0];
+  },
+
+  buscarPorEmail: async (email) => {
+    const result = await pool.query(`
+      SELECT *
+      FROM usuarios
+      WHERE email = $1
+    `, [email]);
+
+    return result.rows[0];
+  },
+
+  /*ACTUALIZAR USUARIO */
+  actualizar: async (id, data) => {
+    const { nombre, apellido, telefono, email, password, rol } = data;
+
+    const result = await pool.query(
+      `
+      UPDATE usuarios
+      SET
+        nombre = $1,
+        apellido = $2,
+        telefono = $3,
+        email = $4,
+        password_hash = $5,
+        rol = $6
+      WHERE usuario_id = $7
+      RETURNING *
+      `,
+      [nombre, apellido, telefono, email, password, rol, id]
+    );
+
+    return result.rows[0];
   }
+
 };
 
 export default Usuario;
