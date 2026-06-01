@@ -8,7 +8,7 @@ import SeleccionTipoRegistro from './pages/auth/SeleccionTipoRegistro';
 import RegisterUsuario from './pages/auth/RegisterUsuario';
 import RegisterEmpresa from "./pages/auth/RegisterEmpresa";
 import DetalleEmpleo from './pages/empleo/DetalleEmpleo';
-
+import Dashboard from './pages/usuario/Dashboard';
 function App() {
   return (
     <Router>
@@ -20,6 +20,7 @@ function App() {
           <Route path="/registro" element={<SeleccionTipoRegistro />} />
           <Route path="/register-usuario" element={<RegisterUsuario />} />
           <Route path="/register-empresa" element={<RegisterEmpresa />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </main>
       <Footer />

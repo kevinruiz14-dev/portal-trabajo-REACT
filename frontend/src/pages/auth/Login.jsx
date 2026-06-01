@@ -1,23 +1,44 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import "../../styles/Login.css";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleLogin = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    console.log("Datos enviados:");
 
-    console.log({
-      email,
-      password,
+  try {
+    const response = await fetch("http://localhost:3000/api/usuarios/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        password,
+      }),
     });
 
-    // Aquí conectaremos la API después
-  };
+    const data = await response.json();
+
+    if (!response.ok) {
+      alert(data.message || "Error al iniciar sesión");
+      return;
+    }
+
+    console.log("Login exitoso:", data);
+
+    navigate("/dashboard");
+
+  } catch (error) {
+    console.error("Error en login:", error);
+  }
+};
 
   return (
     <div className="login-container">
