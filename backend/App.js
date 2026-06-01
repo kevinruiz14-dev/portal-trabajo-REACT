@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import express from 'express';
+import cors from 'cors';
 dotenv.config(); 
 
 // Usar rutas
@@ -10,6 +11,7 @@ import aplicacionesRoutes from './src/routes/aplicacionesRoutes.js';
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 
 app.use('/api/empresas', empresasRoutes);

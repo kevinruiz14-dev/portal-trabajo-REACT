@@ -19,8 +19,6 @@ router.get('/', usuariosController.getAllUsers);
 /* RUTA OBTENER USUARIO POR ID */
 router.get('/:id', usuariosController.getUserById);
 
-export default router;
-
 /*ELIMINAR USUARIO POR ID */
 router.delete('/:id', usuariosController.deleteUser);
 
@@ -29,3 +27,6 @@ router.post('/login', usuariosController.loginUser);
 
 /*RUTA ACTUALIZAR USUARIO */
 router.put("/:id", usuariosController.updateUser);
+
+export default router;
+
