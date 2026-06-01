@@ -30,15 +30,3 @@ body {
 .btn-primary-custom:hover {
   background-color: var(--color-primary-hover);
 }
-
-/* Barra de búsqueda */
-.search-input {
-  border: 2px solid #1E3A8A; /* azul oscuro */
-  border-radius: 6px;
-}
-
-.search-input:focus {
-  border-color: #1E3A8A;
-  box-shadow: 0 0 5px rgba(30, 58, 138, 0.5);
-  outline: none;
-}

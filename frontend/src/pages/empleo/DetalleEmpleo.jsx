@@ -1,23 +1,130 @@
+import { useNavigate, useParams } from "react-router-dom";
+import { useState } from "react";
+import jobs from "../../data/jobs";
+import JobDetailsCard from "../../componentes/JobDetailsCard";
+
 const DetalleEmpleo = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  const job = jobs.find((j) => j.id === parseInt(id));
+
+  // 🔥 estado del modal
+  const [showModal, setShowModal] = useState(false);
+
+  if (!job) {
+    return <p className="text-center mt-4">Empleo no encontrado</p>;
+  }
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-      <div className="card" style={{ padding: '2.5rem', borderTop: '5px solid var(--primary)' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
-          <div>
-            <h1 style={{ fontSize: '2rem', marginBottom: '0.5rem', color: 'var(--text-main)' }}>Detalle de la Vacante</h1>
-            <p style={{ fontSize: '1.1rem', color: 'var(--text-muted)' }}>Cargando información de la vacante...</p>
+    <div className="container mt-4">
+
+      {/* BOTÓN REGRESAR */}
+      <button
+        className="btn mb-3"
+        style={{ border: "1px solid #800020", color: "#800020" }}
+        onClick={() => navigate(-1)}
+      >
+        ← Regresar
+      </button>
+
+      <div className="row">
+
+        {/* CONTENIDO */}
+        <div className="col-md-8">
+          <JobDetailsCard job={job} />
+        </div>
+
+        {/* SIDEBAR */}
+        <div className="col-md-4">
+          <div className="card p-3 shadow-sm">
+
+            <h5>Detalles</h5>
+
+            <p><strong>Empresa:</strong> {job.company}</p>
+            <p><strong>Modalidad:</strong> {job.type}</p>
+            <p><strong>Categoría:</strong> {job.category}</p>
+            <p><strong>Fecha límite:</strong> {job.deadline}</p>
+
+            {/* BOTÓN APLICAR */}
+            <button
+              className="btn mt-3"
+              style={{ backgroundColor: "#800020", color: "#fff" }}
+              onClick={() => setShowModal(true)}
+            >
+              Aplicar
+            </button>
+
           </div>
         </div>
+
       </div>
-      <div style={{ display: 'flex', gap: '2rem', alignItems: 'flex-start' }}>
-        <div className="card" style={{ flex: 1, padding: '2.5rem', minHeight: '300px' }}>
-          <p style={{ color: 'var(--text-main)', lineHeight: '1.7' }}>Aquí se renderizará toda la descripción, requisitos y beneficios del puesto cuando se extraigan de la base de datos.</p>
+
+      {/* 🔥 MODAL */}
+      {showModal && (
+        <div className="modal fade show d-block" tabIndex="-1">
+          <div className="modal-dialog">
+            <div className="modal-content">
+
+              <div className="modal-header">
+                <h5 className="modal-title">Aplicar a empleo</h5>
+                <button
+                  className="btn-close"
+                  onClick={() => setShowModal(false)}
+                ></button>
+              </div>
+
+              <div className="modal-body">
+
+                <div className="mb-3">
+                  <label>Nombre completo</label>
+                  <input type="text" className="form-control" />
+                </div>
+
+                <div className="mb-3">
+                  <label>Dirección</label>
+                  <input type="text" className="form-control" />
+                </div>
+
+                <div className="mb-3">
+                  <label>Teléfono</label>
+                  <input type="text" className="form-control" />
+                </div>
+
+                <div className="mb-3">
+                  <label>Adjuntar CV</label>
+                  <input type="file" className="form-control" />
+                </div>
+
+              </div>
+
+              <div className="modal-footer">
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => setShowModal(false)}
+                >
+                  Cancelar
+                </button>
+
+                <button
+                  className="btn"
+                  style={{ backgroundColor: "#800020", color: "#fff" }}
+                  onClick={() => {
+                    alert("Aplicación enviada");
+                    setShowModal(false);
+                  }}
+                >
+                  Enviar
+                </button>
+              </div>
+
+            </div>
+          </div>
         </div>
-        <aside className="card" style={{ width: '300px', flexShrink: 0, position: 'sticky', top: '90px' }}>
-          <button className="btn btn-primary" style={{ width: '100%', padding: '1rem', fontSize: '1.1rem', marginBottom: '1rem' }}>🚀 Postularme Ahora</button>
-        </aside>
-      </div>
+      )}
+
     </div>
   );
 };
+
 export default DetalleEmpleo;
