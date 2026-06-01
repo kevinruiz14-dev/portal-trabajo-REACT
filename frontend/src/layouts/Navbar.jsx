@@ -12,7 +12,7 @@ const Navbar = () => {
         <Link to="/login" className="btn btn-outline">
           Iniciar Sesión
         </Link>
-        <Link to="/register" className="btn btn-primary">
+        <Link to="/Registro" className="btn btn-primary">
           Registrarse
         </Link>
       </div>
