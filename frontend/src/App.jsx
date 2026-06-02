@@ -10,6 +10,7 @@ import RegisterEmpresa from "./pages/auth/RegisterEmpresa";
 import DetalleEmpleo from './pages/empleo/DetalleEmpleo';
 import Dashboard from './pages/usuario/Dashboard';
 import Empleos from './pages/empleo/Empleos';
+import Perfil from './pages/usuario/Perfil';
 function App() {
   return (
     <Router>
@@ -23,6 +24,7 @@ function App() {
           <Route path="/register-empresa" element={<RegisterEmpresa />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/empleos" element={<Empleos />} />
+          <Route path="/perfil" element={<Perfil />} />
         </Routes>
       </main>
       <Footer />
