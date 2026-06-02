@@ -72,7 +72,7 @@ function DashboardEmpresa() {
     };
 
     fetchDashboardData();
-  }, [user, navigate]);
+  }, [userData, navigate]);
 
   const handleCrearOferta = async (e) => {
     e.preventDefault();
