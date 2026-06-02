@@ -9,7 +9,7 @@ const DetalleEmpleo = () => {
 
   const job = jobs.find((j) => j.id === parseInt(id));
 
-  // 🔥 estado del modal
+  //  estado del modal
   const [showModal, setShowModal] = useState(false);
 
   if (!job) {
@@ -60,7 +60,7 @@ const DetalleEmpleo = () => {
 
       </div>
 
-      {/* 🔥 MODAL */}
+      {/*  MODAL */}
       {showModal && (
         <div className="modal fade show d-block" tabIndex="-1">
           <div className="modal-dialog">

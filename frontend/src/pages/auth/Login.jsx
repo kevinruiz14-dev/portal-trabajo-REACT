@@ -33,6 +33,8 @@ function Login() {
 
     console.log("Login exitoso:", data);
 
+    localStorage.setItem("user", JSON.stringify(data.user));
+
     navigate("/dashboard");
 
   } catch (error) {

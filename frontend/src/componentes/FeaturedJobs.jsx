@@ -1,5 +1,5 @@
 import jobs from "../data/jobs";
-import JobCard from "./JobCard";
+import JobDetailsCard from "./JobDetailsCard";
 
 const FeaturedJobs = () => {
 
