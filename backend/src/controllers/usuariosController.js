@@ -1,9 +1,11 @@
 import Usuario from "../models/usuariosModel.js";
+import bcrypt from "bcrypt";
+
 /* CREAR USUARIO */
 export const postCreateUser = async (req, res, next) => {
   try {
     console.log(req.body);
-    
+
     const {
       nombre,
       apellido,
@@ -13,12 +15,15 @@ export const postCreateUser = async (req, res, next) => {
       rol
     } = req.body;
 
+    // ENCRIPTAR PASSWORD
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const nuevoUsuario = await Usuario.crear({
       nombre,
       apellido,
       telefono,
       email,
-      password,
+      password_hash: hashedPassword, // IMPORTANTE
       rol
     });
 
@@ -86,13 +91,18 @@ export const loginUser = async (req, res, next) => {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
 
-    if (user.password_hash !== password) {
-  return res.status(401).json({ message: "Contraseña incorrecta" });
-}
+    const isPasswordValid = await bcrypt.compare(
+      password,
+      user.password_hash
+    );
+
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: "Contraseña incorrecta" });
+    }
 
     return res.status(200).json({
       message: "Login exitoso",
-      user
+      user,
     });
 
   } catch (error) {
