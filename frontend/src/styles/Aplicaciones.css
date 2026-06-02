@@ -1,0 +1,134 @@
+/* =========================
+   MIS APLICACIONES - UI
+   Paleta Cereza Borgoña
+   ========================= */
+
+body {
+  background-color: #F9FAFB;
+}
+
+/* Contenedor principal */
+.mis-aplicaciones-container {
+  padding: 2rem;
+}
+
+/* Título */
+.mis-aplicaciones-container h2 {
+  color: #111827;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+/* =========================
+   TABLA
+   ========================= */
+
+.table {
+  background-color: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* Encabezado tabla */
+.table thead {
+  background-color: #800020;
+  color: white;
+}
+
+.table thead th {
+  border: none;
+  padding: 12px;
+  font-weight: 600;
+}
+
+/* Celdas */
+.table tbody td {
+  color: #111827;
+  border-color: #E5E7EB;
+  padding: 12px;
+}
+
+/* Hover de filas */
+.table tbody tr:hover {
+  background-color: #F3F4F6;
+  transition: 0.2s ease;
+}
+
+/* =========================
+   ESTADOS (IMPORTANTE)
+   ========================= */
+
+.estado {
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+/* Pendiente */
+.estado.pendiente {
+  background-color: #FEF3C7;
+  color: #92400E;
+}
+
+/* Aprobada */
+.estado.aprobada {
+  background-color: #D1FAE5;
+  color: #065F46;
+}
+
+/* Rechazada */
+.estado.rechazada {
+  background-color: #FEE2E2;
+  color: #991B1B;
+}
+
+/* =========================
+   BOTONES (si agregas acciones)
+   ========================= */
+
+.btn-principal {
+  background-color: #800020;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: 0.2s ease;
+}
+
+.btn-principal:hover {
+  background-color: #5E0017;
+  color: white;
+}
+
+/* Botón secundario */
+.btn-secundario {
+  background-color: transparent;
+  border: 1px solid #800020;
+  color: #800020;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: 0.2s ease;
+}
+
+.btn-secundario:hover {
+  background-color: #800020;
+  color: white;
+}
+
+/* =========================
+   EMPTY STATE
+   ========================= */
+
+.empty-message {
+  text-align: center;
+  color: #6B7280;
+  padding: 2rem;
+  background-color: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 10px;
+}
