@@ -3,7 +3,7 @@ import pool from "../config/db.js";
 const Usuario = {
 
   crear: async (data) => {
-    const { nombre, apellido, telefono, email, password, rol } = data;
+    const { nombre, apellido, telefono, email, password_hash, rol } = data;
 
     const result = await pool.query(
       `
@@ -12,7 +12,7 @@ const Usuario = {
       VALUES ($1, $2, $3, $4, $5, $6)
       RETURNING *
       `,
-      [nombre, apellido, telefono, email, password, rol]
+      [nombre, apellido, telefono, email, password_hash, rol]
     );
 
     return result.rows[0];
@@ -59,6 +59,7 @@ const Usuario = {
 
   /*ACTUALIZAR USUARIO */
   actualizar: async (id, data) => {
+    
     const { nombre, apellido, telefono, email, password, rol } = data;
 
     const result = await pool.query(

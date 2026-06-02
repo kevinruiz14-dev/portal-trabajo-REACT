@@ -1,5 +1,5 @@
 import jobs from "../data/jobs";
-import JobCard from "./JobCard";
+import JobDetailsCard from "./JobDetailsCard";
 
 const FeaturedJobs = () => {
 
@@ -19,7 +19,7 @@ const FeaturedJobs = () => {
       <div className="row">
         {featured.map((job) => (
           <div className="col-md-6" key={job.id}>
-            <JobCard job={job} />
+            <JobDetailsCard job={job} />
           </div>
         ))}
       </div>

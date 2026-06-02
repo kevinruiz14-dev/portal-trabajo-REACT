@@ -8,7 +8,10 @@ import SeleccionTipoRegistro from './pages/auth/SeleccionTipoRegistro';
 import RegisterUsuario from './pages/auth/RegisterUsuario';
 import RegisterEmpresa from "./pages/auth/RegisterEmpresa";
 import DetalleEmpleo from './pages/empleo/DetalleEmpleo';
-
+import Dashboard from './pages/usuario/Dashboard';
+import Empleos from './pages/empleo/Empleos';
+import Perfil from './pages/usuario/Perfil';
+import MisAplicaciones from './pages/usuario/Aplicaciones';
 function App() {
   return (
     <Router>
@@ -20,6 +23,10 @@ function App() {
           <Route path="/registro" element={<SeleccionTipoRegistro />} />
           <Route path="/register-usuario" element={<RegisterUsuario />} />
           <Route path="/register-empresa" element={<RegisterEmpresa />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/empleos" element={<Empleos />} />
+          <Route path="/perfil" element={<Perfil />} />
+          <Route path="/mis-aplicaciones" element={<MisAplicaciones />} />
         </Routes>
       </main>
       <Footer />

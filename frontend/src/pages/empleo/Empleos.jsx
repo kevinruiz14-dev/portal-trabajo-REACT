@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
-import jobsData from "../data/jobs";
+import jobsData from "../../data/jobs.js";
 
-import JobCard from "../componentes/JobCard";
-import LoadingJobs from "../componentes/LoadingJobs";
-import EmptyJobs from "../componentes/EmptyJobs";
-import FeaturedJobs from "../componentes/FeaturedJobs";
+import JobDetailsCard from "../../componentes/JobDetailsCard";
+import LoadingJobs from "../../componentes/LoadingJobs";
+import EmptyJobs from "../../componentes/EmptyJobs";
+import FeaturedJobs from "../../componentes/FeaturedJobs";
 
 const Empleos = () => {
   const [loading, setLoading] = useState(true);
 
-  // 🔥 NUEVO ESTADO
+  //  NUEVO ESTADO
   const [mostrarResultados, setMostrarResultados] = useState(false);
 
   useEffect(() => {
@@ -31,7 +31,7 @@ const Empleos = () => {
 
       <FeaturedJobs />
 
-      {/* 🔥 BOTÓN BUSCAR (el de tus compañeros) */}
+      {/*  BOTÓN BUSCAR */}
       <div className="text-center mb-4">
         <button
           className="btn"
@@ -42,12 +42,12 @@ const Empleos = () => {
         </button>
       </div>
 
-      {/* 🔥 RESULTADOS SOLO SI SE PRESIONA */}
+      {/*  RESULTADOS SOLO SI SE PRESIONA */}
       {mostrarResultados && (
         <>
           {jobsData.length > 0 ? (
             jobsData.map((job) => (
-              <JobCard key={job.id} job={job} />
+              <JobDetailsCard key={job.id} job={job} />
             ))
           ) : (
             <EmptyJobs />
