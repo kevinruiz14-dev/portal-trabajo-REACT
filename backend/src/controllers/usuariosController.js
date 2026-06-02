@@ -12,7 +12,10 @@ export const postCreateUser = async (req, res, next) => {
       telefono,
       email,
       password,
-      rol
+      rol,
+      sitio_web,
+      descripcion,
+      ubicacion
     } = req.body;
 
     const nombreFinal = nombre || req.body.nombre_empresa || req.body.nombreEmpresa || "Empresa";
@@ -26,7 +29,10 @@ export const postCreateUser = async (req, res, next) => {
       telefono,
       email,
       password_hash: hashedPassword, // IMPORTANTE
-      rol
+      rol,
+      sitio_web,
+      descripcion,
+      ubicacion
     });
 
     return res.status(201).json(nuevoUsuario);

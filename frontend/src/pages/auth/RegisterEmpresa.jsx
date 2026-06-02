@@ -1,8 +1,10 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../../styles/RegisterEmpresa.css";
+import API from "../../services/api";
 
 function RegisterEmpresa() {
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
   nombre_empresa: "",
@@ -25,63 +27,23 @@ function RegisterEmpresa() {
   e.preventDefault();
 
   try {
-
-    // Crear usuario empresa
-    const usuarioResponse = await fetch(
-      "http://localhost:3000/api/usuarios",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          nombre: formData.nombre_empresa,
-          apellido: "Empresa",
-          telefono: formData.telefono,
-          email: formData.email,
-          password: formData.password,
-          rol: "empresa",
-        }),
-      }
-    );
-
-    const usuarioData = await usuarioResponse.json();
-
-    if (!usuarioResponse.ok) {
-      throw new Error("Error al crear usuario empresa");
-    }
-
-    // Crear empresa
-    const empresaResponse = await fetch(
-      "http://localhost:3000/api/empresas",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          usuario_id: usuarioData.usuario_id,
-          nombre_empresa: formData.nombre_empresa,
-          sitio_web: formData.sitio_web,
-          descripcion: formData.descripcion,
-          ubicacion: formData.ubicacion,
-        }),
-      }
-    );
-
-    const empresaData = await empresaResponse.json();
-
-    if (!empresaResponse.ok) {
-      throw new Error("Error al crear empresa");
-    }
+    await API.post("/usuarios", {
+      nombre: formData.nombre_empresa,
+      apellido: "Empresa",
+      telefono: formData.telefono,
+      email: formData.email,
+      password: formData.password,
+      rol: "empresa",
+      sitio_web: formData.sitio_web,
+      descripcion: formData.descripcion,
+      ubicacion: formData.ubicacion,
+    });
 
     alert("Empresa registrada correctamente");
-
-    console.log(empresaData);
-
+    navigate("/login");
   } catch (error) {
     console.error(error);
-    alert(error.message);
+    alert(error.response?.data?.error || error.response?.data?.message || "Error al registrar empresa");
   }
 };
   return (

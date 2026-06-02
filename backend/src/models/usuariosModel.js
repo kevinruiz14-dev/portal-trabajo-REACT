@@ -3,7 +3,7 @@ import pool from "../config/db.js";
 const Usuario = {
 
   crear: async (data) => {
-    const { nombre, apellido, telefono, email, password_hash, rol } = data;
+    const { nombre, apellido, telefono, email, password_hash, rol, sitio_web, descripcion, ubicacion } = data;
 
     const result = await pool.query(
       `
@@ -20,13 +20,13 @@ const Usuario = {
     if (String(rol).toLowerCase().trim() === 'empresa') {
       try {
         await pool.query(
-          `INSERT INTO empresas (usuario_id, nombre_empresa) VALUES ($1, $2)`,
-          [nuevoUsuario.usuario_id, nombre || 'Empresa']
+          `INSERT INTO empresas (usuario_id, nombre_empresa, sitio_web, descripcion, ubicacion) VALUES ($1, $2, $3, $4, $5)`,
+          [nuevoUsuario.usuario_id, nombre || 'Empresa', sitio_web || null, descripcion || null, ubicacion || null]
         );
       } catch (error) {
         await pool.query(
-          `UPDATE empresas SET usuario_id = $1 WHERE nombre_empresa = $2`,
-          [nuevoUsuario.usuario_id, nombre || 'Empresa']
+          `UPDATE empresas SET usuario_id = $1, sitio_web = $3, descripcion = $4, ubicacion = $5 WHERE nombre_empresa = $2`,
+          [nuevoUsuario.usuario_id, nombre || 'Empresa', sitio_web || null, descripcion || null, ubicacion || null]
         ).catch(err => console.error("Error al vincular empresa:", err));
       }
     }
