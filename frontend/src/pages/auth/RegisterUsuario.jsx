@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../../styles/RegisterUsuario.css";
+import API from "../../services/api";
 
 function RegisterUsuario() {
   const navigate = useNavigate();
@@ -23,26 +24,11 @@ const handleSubmit = async (e) => {
   e.preventDefault();
 
   try {
-
-    const response = await fetch(
-      "http://localhost:3000/api/usuarios",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...formData,
-          rol: "postulante",
-        }),
-      }
-    );
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.message || "Error al registrar usuario");
-    }
+    // Usamos Axios (API) para mantener la consistencia y capturar mejor los errores
+    const response = await API.post("/usuarios", {
+      ...formData,
+      rol: "postulante",
+    });
 
     alert("Usuario registrado correctamente");
     
@@ -54,11 +40,13 @@ const handleSubmit = async (e) => {
       password: "",
     });
 
-    navigate("/Login");
+    // Aseguramos que la ruta coincida exactamente con la declarada en tus rutas (generalmente minúsculas)
+    navigate("/login");
 
   } catch (error) {
     console.error(error);
-    alert(error.message);
+    // Mostramos el mensaje exacto que devuelve el backend (App.js devuelve 'error', otros 'message')
+    alert(error.response?.data?.error || error.response?.data?.message || "Error al registrar usuario");
   }
 };
 

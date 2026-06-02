@@ -12,6 +12,7 @@ import Dashboard from './pages/usuario/Dashboard';
 import Empleos from './pages/empleo/Empleos';
 import Perfil from './pages/usuario/Perfil';
 import MisAplicaciones from './pages/usuario/Aplicaciones';
+import DashboardEmpresa from './pages/empresa/dashboard';
 function App() {
   return (
     <Router>
@@ -27,6 +28,7 @@ function App() {
           <Route path="/empleos" element={<Empleos />} />
           <Route path="/perfil" element={<Perfil />} />
           <Route path="/mis-aplicaciones" element={<MisAplicaciones />} />
+          <Route path="/empresa/dashboard" element={<DashboardEmpresa />} />
         </Routes>
       </main>
       <Footer />

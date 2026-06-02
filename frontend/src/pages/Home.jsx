@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import API from '../services/api';
 
 const PALETTE = {
   primary: '#800020',
@@ -303,45 +305,138 @@ const styles = {
     fontSize: '0.9rem', fontWeight: '600', cursor: 'pointer',
     fontFamily: 'inherit', transition: 'all 0.18s ease',
   },
+  modalOverlay: {
+    position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1000,
+    display: 'flex', justifyContent: 'center', alignItems: 'center',
+    padding: '1rem'
+  },
+  modalContent: {
+    backgroundColor: PALETTE.surface, borderRadius: '16px', padding: '2rem',
+    width: '100%', maxWidth: '600px', maxHeight: '90vh', overflowY: 'auto',
+    position: 'relative', boxShadow: '0 20px 40px rgba(0,0,0,0.2)'
+  },
+  closeBtn: {
+    position: 'absolute', top: '1.2rem', right: '1.5rem',
+    background: 'none', border: 'none', fontSize: '1.2rem', cursor: 'pointer',
+    color: PALETTE.textMuted, fontWeight: 'bold'
+  },
 };
 
-const AREAS = ['Tecnología', 'Marketing', 'Finanzas', 'Diseño', 'Ventas', 'RR.HH.'];
-
-const JobCard = ({ empleo }) => (
+const JobCard = ({ empleo, onClick }) => (
   <div style={styles.jobCard}
+    onClick={onClick}
     onMouseEnter={e => { e.currentTarget.style.borderColor = '#f0b0bb'; e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 4px 20px rgba(128,0,32,0.1)'; }}
     onMouseLeave={e => { e.currentTarget.style.borderColor = PALETTE.border; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = styles.jobCard.boxShadow; }}
   >
     <div style={styles.cardTop}>
-      <div style={styles.companyLogo}>{empleo.icon || '💼'}</div>
       <div style={styles.cardInfo}>
         <div style={styles.jobTitle}>{empleo.titulo}</div>
-        <div style={styles.companyName}>{empleo.empresa} · {empleo.ubicacion}</div>
+        <div style={styles.companyName}>{empleo.nombre_empresa || 'Empresa'} · {empleo.ubicacion || 'No especificada'}</div>
       </div>
-      {empleo.nuevo && <span style={styles.badgeNew}>Nuevo</span>}
     </div>
     <div style={styles.cardTags}>
-      {(empleo.tags || []).map(tag => <span key={tag} style={styles.cardTag}>{tag}</span>)}
+      {empleo.modalidad && <span style={{ ...styles.cardTag, textTransform: 'capitalize' }}>{empleo.modalidad}</span>}
+      {empleo.tipo_contrato && <span style={{ ...styles.cardTag, textTransform: 'capitalize' }}>{empleo.tipo_contrato.replace('_', ' ')}</span>}
+      {empleo.area && <span style={{ ...styles.cardTag, textTransform: 'capitalize' }}>{empleo.area}</span>}
     </div>
+    <p style={{ fontSize: '0.85rem', color: PALETTE.textMuted, marginBottom: '1rem' }}>
+      {empleo.descripcion ? (empleo.descripcion.substring(0, 100) + '...') : 'Sin descripción'}
+    </p>
     <div style={styles.cardFooter}>
-      <span style={styles.salary}>{empleo.salario}</span>
-      <span style={styles.posted}>{empleo.fecha}</span>
+      <span style={styles.salary}>{empleo.salario ? `$${empleo.salario}` : 'No especificado'}</span>
+      <span style={styles.posted}>{empleo.creada_en ? new Date(empleo.creada_en).toLocaleDateString() : ''}</span>
     </div>
   </div>
 );
 
 const Home = () => {
+  const navigate = useNavigate();
+  const userData = localStorage.getItem("user");
+  const user = userData ? JSON.parse(userData) : null;
+
+  const [selectedJob, setSelectedJob] = useState(null);
+  const [aplicando, setAplicando] = useState(false);
+
   const [empleos, setEmpleos] = useState([]);
   const [busqueda, setBusqueda] = useState('');
   const [ubicacion, setUbicacion] = useState('');
   const [areasActivas, setAreasActivas] = useState([]);
+  const [modalidadesActivas, setModalidadesActivas] = useState([]);
+  const [contratosActivos, setContratosActivos] = useState([]);
+  const [orden, setOrden] = useState('Más recientes');
+
+  const [areasDisponibles, setAreasDisponibles] = useState([]);
+  const [modalidadesDisponibles, setModalidadesDisponibles] = useState([]);
+  const [contratosDisponibles, setContratosDisponibles] = useState([]);
 
   useEffect(() => {
-    // TODO: fetch('/api/empleos/').then(r => r.json()).then(setEmpleos)
+    const obtenerOfertas = async () => {
+      try {
+        const response = await API.get("/ofertas");
+        const data = response.data.data || response.data || [];
+        setEmpleos(data);
+
+        const areas = [...new Set(data.map(e => e.area).filter(Boolean))];
+        const modalidades = [...new Set(data.map(e => e.modalidad).filter(Boolean))];
+        const contratos = [...new Set(data.map(e => e.tipo_contrato).filter(Boolean))];
+
+        setAreasDisponibles(areas);
+        setModalidadesDisponibles(modalidades);
+        setContratosDisponibles(contratos);
+      } catch (error) {
+        console.error("Error cargando ofertas:", error);
+      }
+    };
+    obtenerOfertas();
   }, []);
 
-  const toggleArea = (area) =>
-    setAreasActivas(prev => prev.includes(area) ? prev.filter(a => a !== area) : [...prev, area]);
+  const handleAplicar = async () => {
+    if (!user) {
+      alert("Debes iniciar sesión para aplicar a una oferta.");
+      navigate("/login");
+      return;
+    }
+    try {
+      setAplicando(true);
+      await API.post("/aplicaciones", {
+        oferta_id: selectedJob.oferta_id || selectedJob.id,
+        usuario_id: user.usuario_id,
+        empresa_id: selectedJob.empresa_id || selectedJob.usuario_id
+      });
+      alert("Aplicación enviada con éxito");
+      setSelectedJob(null);
+    } catch (error) {
+      console.error("Error al aplicar:", error);
+      alert(error.response?.data?.error || error.response?.data?.mensaje || error.response?.data?.message || "Error al procesar la aplicación");
+    } finally {
+      setAplicando(false);
+    }
+  };
+
+  const toggleFiltro = (valor, activos, setActivos) => {
+    setActivos(prev => prev.includes(valor) ? prev.filter(v => v !== valor) : [...prev, valor]);
+  };
+
+  const empleosFiltrados = empleos.filter(empleo => {
+    const matchBusqueda = (empleo.titulo || '').toLowerCase().includes(busqueda.toLowerCase()) ||
+                          (empleo.nombre_empresa || '').toLowerCase().includes(busqueda.toLowerCase());
+    const matchUbicacion = (empleo.ubicacion || '').toLowerCase().includes(ubicacion.toLowerCase());
+
+    const matchArea = areasActivas.length === 0 || areasActivas.includes(empleo.area);
+    const matchModalidad = modalidadesActivas.length === 0 || modalidadesActivas.includes(empleo.modalidad);
+    const matchContrato = contratosActivos.length === 0 || contratosActivos.includes(empleo.tipo_contrato);
+
+    return matchBusqueda && matchUbicacion && matchArea && matchModalidad && matchContrato;
+  }).sort((a, b) => {
+    if (orden === 'Más recientes') {
+      return new Date(b.creada_en || 0) - new Date(a.creada_en || 0);
+    }
+    if (orden === 'Mejor salario') {
+      return (parseFloat(b.salario) || 0) - (parseFloat(a.salario) || 0);
+    }
+    return 0;
+  });
 
   return (
     <div style={styles.page}>
@@ -355,14 +450,14 @@ const Home = () => {
         <div style={styles.searchBar}>
           <input
             type="text"
-            placeholder="🔍  Cargo, palabra clave o empresa..."
+            placeholder="Cargo, palabra clave o empresa..."
             value={busqueda}
             onChange={e => setBusqueda(e.target.value)}
             style={styles.searchInput}
           />
           <input
             type="text"
-            placeholder="📍  Ubicación..."
+            placeholder="Ubicación..."
             value={ubicacion}
             onChange={e => setUbicacion(e.target.value)}
             style={{ ...styles.searchInput, maxWidth: '200px' }}
@@ -384,36 +479,36 @@ const Home = () => {
         <aside style={styles.sidebar}>
           <div style={styles.sidebarHeader}>
             <h3 style={styles.sidebarTitle}>Filtros</h3>
-            <button style={styles.clearBtn}>Limpiar todo</button>
+            <button style={styles.clearBtn} onClick={() => { setAreasActivas([]); setModalidadesActivas([]); setContratosActivos([]); setBusqueda(''); setUbicacion(''); setOrden('Más recientes'); }}>Limpiar todo</button>
           </div>
 
           <div style={styles.filterSection}>
             <span style={styles.filterLabel}>Modalidad</span>
-            {['Remoto', 'Híbrido', 'Presencial'].map(m => (
+            {modalidadesDisponibles.length > 0 ? modalidadesDisponibles.map(m => (
               <label key={m} style={styles.checkboxItem}>
-                <input type="checkbox" style={{ accentColor: PALETTE.primary, width: '15px', height: '15px', cursor: 'pointer' }} />
-                <span style={styles.checkboxLabel}>{m}</span>
+                <input type="checkbox" checked={modalidadesActivas.includes(m)} onChange={() => toggleFiltro(m, modalidadesActivas, setModalidadesActivas)} style={{ accentColor: PALETTE.primary, width: '15px', height: '15px', cursor: 'pointer' }} />
+                <span style={{ ...styles.checkboxLabel, textTransform: 'capitalize' }}>{m}</span>
               </label>
-            ))}
+            )) : <span style={{ fontSize: '0.8rem', color: PALETTE.textMuted }}>No hay modalidades</span>}
           </div>
 
           <div style={styles.filterSection}>
             <span style={styles.filterLabel}>Tipo de contrato</span>
-            {['Tiempo completo', 'Medio tiempo', 'Freelance'].map(t => (
+            {contratosDisponibles.length > 0 ? contratosDisponibles.map(t => (
               <label key={t} style={styles.checkboxItem}>
-                <input type="checkbox" style={{ accentColor: PALETTE.primary, width: '15px', height: '15px', cursor: 'pointer' }} />
-                <span style={styles.checkboxLabel}>{t}</span>
+                <input type="checkbox" checked={contratosActivos.includes(t)} onChange={() => toggleFiltro(t, contratosActivos, setContratosActivos)} style={{ accentColor: PALETTE.primary, width: '15px', height: '15px', cursor: 'pointer' }} />
+                <span style={{ ...styles.checkboxLabel, textTransform: 'capitalize' }}>{t.replace('_', ' ')}</span>
               </label>
-            ))}
+            )) : <span style={{ fontSize: '0.8rem', color: PALETTE.textMuted }}>No hay contratos</span>}
           </div>
 
           <div style={styles.filterSection}>
             <span style={styles.filterLabel}>Área</span>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
-              {AREAS.map(area => (
+              {areasDisponibles.length > 0 ? areasDisponibles.map(area => (
                 <span
                   key={area}
-                  onClick={() => toggleArea(area)}
+                  onClick={() => toggleFiltro(area, areasActivas, setAreasActivas)}
                   style={{
                     display: 'inline-block',
                     padding: '0.3rem 0.8rem',
@@ -427,7 +522,7 @@ const Home = () => {
                     transition: 'all 0.15s',
                   }}
                 >{area}</span>
-              ))}
+              )) : <span style={{ fontSize: '0.8rem', color: PALETTE.textMuted }}>No hay áreas</span>}
             </div>
           </div>
         </aside>
@@ -437,33 +532,68 @@ const Home = () => {
           <div style={styles.resultsHeader}>
             <h2 style={styles.resultsTitle}>
               Resultados
-              <span style={styles.resultsBadge}>{empleos.length} empleos</span>
+              <span style={styles.resultsBadge}>{empleosFiltrados.length} empleos</span>
             </h2>
-            <select style={styles.sortSelect}>
-              <option>Más recientes</option>
-              <option>Mejor salario</option>
-              <option>Más relevantes</option>
+            <select style={styles.sortSelect} value={orden} onChange={e => setOrden(e.target.value)}>
+              <option value="Más recientes">Más recientes</option>
+              <option value="Mejor salario">Mejor salario</option>
+              <option value="Más relevantes">Más relevantes</option>
             </select>
           </div>
 
           <div style={styles.jobsList}>
-            {empleos.length === 0 ? (
+            {empleosFiltrados.length === 0 ? (
               <div style={styles.emptyState}>
-                <div style={styles.emptyIcon}>🔍</div>
+                <div style={styles.emptyIcon}></div>
                 <h3 style={styles.emptyH3}>Aún no hay empleos publicados</h3>
-                <p style={styles.emptyP}>Los resultados aparecerán aquí una vez que la base de datos esté conectada.</p>
+                <p style={styles.emptyP}>No se encontraron resultados para tu búsqueda o filtros actuales.</p>
                 <button style={styles.btnPrimary}
+                  onClick={() => { setAreasActivas([]); setModalidadesActivas([]); setContratosActivos([]); setBusqueda(''); setUbicacion(''); setOrden('Más recientes'); }}
                   onMouseEnter={e => { e.currentTarget.style.background = PALETTE.primaryHover; e.currentTarget.style.transform = 'translateY(-1px)'; }}
                   onMouseLeave={e => { e.currentTarget.style.background = PALETTE.primary; e.currentTarget.style.transform = 'translateY(0)'; }}>
-                  Publicar un empleo
+                  Limpiar Búsqueda
                 </button>
               </div>
             ) : (
-              empleos.map(empleo => <JobCard key={empleo.id} empleo={empleo} />)
+              empleosFiltrados.map(empleo => <JobCard key={empleo.oferta_id || empleo.id} empleo={empleo} onClick={() => setSelectedJob(empleo)} />)
             )}
           </div>
         </main>
       </div>
+
+      {selectedJob && (
+        <div style={styles.modalOverlay} onClick={() => setSelectedJob(null)}>
+          <div style={styles.modalContent} onClick={e => e.stopPropagation()}>
+            <button style={styles.closeBtn} onClick={() => setSelectedJob(null)}>X</button>
+            <h2 style={{...styles.resultsTitle, marginBottom: '0.5rem'}}>{selectedJob.titulo}</h2>
+            <p style={styles.companyName}>{selectedJob.nombre_empresa || 'Empresa'} · {selectedJob.ubicacion || 'No especificada'}</p>
+            
+            <div style={{...styles.cardTags, marginTop: '1rem'}}>
+              {selectedJob.modalidad && <span style={{ ...styles.cardTag, textTransform: 'capitalize' }}>{selectedJob.modalidad}</span>}
+              {selectedJob.tipo_contrato && <span style={{ ...styles.cardTag, textTransform: 'capitalize' }}>{selectedJob.tipo_contrato.replace('_', ' ')}</span>}
+              {selectedJob.area && <span style={{ ...styles.cardTag, textTransform: 'capitalize' }}>{selectedJob.area}</span>}
+            </div>
+            
+            <p style={{...styles.salary, marginTop: '1rem'}}>{selectedJob.salario ? `$${selectedJob.salario}` : 'Salario no especificado'}</p>
+            
+            <h4 style={{marginTop: '1.5rem', marginBottom: '0.5rem', color: PALETTE.textMain}}>Descripción</h4>
+            <p style={{color: PALETTE.textMuted, fontSize: '0.9rem', lineHeight: '1.6'}}>{selectedJob.descripcion}</p>
+            
+            {selectedJob.requisitos && (
+              <>
+                <h4 style={{marginTop: '1.5rem', marginBottom: '0.5rem', color: PALETTE.textMain}}>Requisitos</h4>
+                <p style={{color: PALETTE.textMuted, fontSize: '0.9rem', lineHeight: '1.6'}}>{selectedJob.requisitos}</p>
+              </>
+            )}
+
+            <div style={{marginTop: '2rem', display: 'flex', justifyContent: 'flex-end'}}>
+              <button style={{...styles.btnPrimary, opacity: aplicando ? 0.7 : 1}} disabled={aplicando} onClick={handleAplicar}>
+                {aplicando ? 'Enviando...' : 'Aplicar a esta oferta'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

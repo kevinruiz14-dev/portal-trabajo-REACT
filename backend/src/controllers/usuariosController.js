@@ -15,11 +15,13 @@ export const postCreateUser = async (req, res, next) => {
       rol
     } = req.body;
 
+    const nombreFinal = nombre || req.body.nombre_empresa || req.body.nombreEmpresa || "Empresa";
+
     // ENCRIPTAR PASSWORD
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const nuevoUsuario = await Usuario.crear({
-      nombre,
+      nombre: nombreFinal,
       apellido,
       telefono,
       email,
@@ -100,9 +102,12 @@ export const loginUser = async (req, res, next) => {
       return res.status(401).json({ message: "Contraseña incorrecta" });
     }
 
+    // Separamos la contraseña hasheada del resto de los datos del usuario por seguridad
+    const { password_hash, ...usuarioSinPassword } = user;
+
     return res.status(200).json({
       message: "Login exitoso",
-      user,
+      user: usuarioSinPassword,
     });
 
   } catch (error) {
@@ -122,7 +127,9 @@ export const updateUser = async (req, res, next) => {
       telefono,
       email,
       password,
-      rol
+      rol,
+      resumen_profesional,
+      url_cv
     } = req.body;
 
     const actualizado = await Usuario.actualizar(id, {
@@ -131,7 +138,9 @@ export const updateUser = async (req, res, next) => {
       telefono,
       email,
       password,
-      rol
+      rol,
+      resumen_profesional,
+      url_cv
     });
 
     if (!actualizado) {

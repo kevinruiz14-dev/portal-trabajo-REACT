@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import API from "../../services/api";
 import "../../styles/Perfil.css";
 
 function Perfil() {
@@ -12,6 +13,7 @@ function Perfil() {
   const [apellido, setApellido] = useState(user?.apellido || "");
   const [telefono, setTelefono] = useState(user?.telefono || "");
   const [resumen, setResumen] = useState(user?.resumen_profesional || "");
+  const [cvUrl, setCvUrl] = useState(user?.url_cv || "");
 
   const cerrarSesion = () => {
     localStorage.removeItem("user");
@@ -20,57 +22,37 @@ function Perfil() {
 
   const guardarCambios = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:3000/api/usuarios/${user.usuario_id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            nombre,
-            apellido,
-            telefono,
-            email: user.email,
-            password: user.password_hash,
-            rol: user.rol,
-          }),
-        }
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        alert(data.message || "Error al actualizar");
-        return;
-      }
-
-      const usuarioActualizado = {
-        ...user,
+      const response = await API.put(`/usuarios/${user.usuario_id}`, {
         nombre,
         apellido,
         telefono,
+        email: user.email,
+        rol: user.rol,
         resumen_profesional: resumen,
-      };
+        url_cv: cvUrl,
+      });
 
-      localStorage.setItem(
-        "user",
-        JSON.stringify(usuarioActualizado)
-      );
+      const data = response.data;
+
+      const { password_hash, ...usuarioParaGuardar } = data.usuario;
+
+      localStorage.setItem("user", JSON.stringify(usuarioParaGuardar));
+
+      window.location.reload();
 
       alert("Perfil actualizado correctamente");
 
     } catch (error) {
       console.error(error);
-      alert("Error al conectar con el servidor");
+      alert(error.response?.data?.mensaje || "Error al conectar con el servidor");
     }
   };
 
   return (
-    <div className="perfil-container">
+    <div className="perfil-container" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
       <h1>Mi Perfil</h1>
 
-      <div className="perfil-card">
+      <div className="perfil-card" style={{ width: "100%", maxWidth: "500px", display: "flex", flexDirection: "column", gap: "10px" }}>
 
         <label>Nombre</label>
         <input
@@ -95,6 +77,13 @@ function Perfil() {
           rows="4"
           value={resumen}
           onChange={(e) => setResumen(e.target.value)}
+        />
+
+        <label>URL del CV</label>
+        <input
+          type="url"
+          value={cvUrl}
+          onChange={(e) => setCvUrl(e.target.value)}
         />
 
         <button onClick={guardarCambios}>

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import "../../styles/Login.css";
 import { useNavigate } from "react-router-dom";
+import API from "../../services/api";
 
 function Login() {
   const navigate = useNavigate();
@@ -11,34 +12,30 @@ function Login() {
   const handleLogin = async (e) => {
   e.preventDefault();
 
-
   try {
-    const response = await fetch("http://localhost:3000/api/usuarios/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email,
-        password,
-      }),
+    const response = await API.post("/usuarios/login", {
+      email,
+      password,
     });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      alert(data.message || "Error al iniciar sesión");
-      return;
-    }
+    
+    const data = response.data;
 
     console.log("Login exitoso:", data);
 
-    localStorage.setItem("user", JSON.stringify(data.user));
+    const usuario = data.usuario || data.user || data;
+    const { password_hash, ...usuarioParaGuardar } = usuario;
 
-    navigate("/dashboard");
+    localStorage.setItem("user", JSON.stringify(usuarioParaGuardar));
+
+    if (usuarioParaGuardar.rol && String(usuarioParaGuardar.rol).toLowerCase().trim() === "empresa") {
+      navigate("/empresa/dashboard");
+    } else {
+      navigate("/");
+    }
 
   } catch (error) {
     console.error("Error en login:", error);
+    alert(error.response?.data?.error || error.response?.data?.mensaje || error.response?.data?.message || "Error al iniciar sesión");
   }
 };
 
