@@ -59,6 +59,7 @@ const Usuario = {
 
   /*ACTUALIZAR USUARIO */
   actualizar: async (id, data) => {
+    
     const { nombre, apellido, telefono, email, password, rol } = data;
 
     const result = await pool.query(

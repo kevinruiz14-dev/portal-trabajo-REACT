@@ -113,6 +113,7 @@ export const loginUser = async (req, res, next) => {
 /*ACTUALIZAR USUARIO */
 export const updateUser = async (req, res, next) => {
   try {
+    console.log(req.body);
     const { id } = req.params;
 
     const {
